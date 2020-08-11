@@ -1,0 +1,36 @@
+---
+- hosts: centos
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  vars:
+    packages:
+      - httpd
+      - php
+      - mariadb-server
+      - mariadb
+
+
+  tasks:
+  - name: Install LAMP software
+    yum:
+      name: "{{ packages }}"
+      state: latest
+
+  - name: Start and enable apache
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    loop:
+      - httpd
+      - mariadb-server
+
+  - name: Configure firewall
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: yes
+      inmediate: yes
+    loop:
+      
