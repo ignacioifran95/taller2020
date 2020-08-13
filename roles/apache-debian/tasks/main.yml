@@ -1,0 +1,22 @@
+---
+# tasks file for roles/apache-debian role
+- name: Install Apache Server
+  apt:
+    name: apache2
+    state: latest
+    update_cache: yes
+
+- name: Start and enable apache services
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: Configurar firewall
+  ufw:
+    rule: allow 
+    port: "{{ item }}"
+    state: enabled
+  loop:
+    - 80
+    - 443

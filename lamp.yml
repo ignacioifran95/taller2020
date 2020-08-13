@@ -1,15 +1,22 @@
 ---
-- hosts: centos
+- hosts: webserver
   remote_user: ansible
   become: yes
   become_method: sudo
   vars:
     packages:
-      - httpd
       - php
       - mariadb-server
       - mariadb
+      sitio: ejemplo
+      server: www.ejemplo.com.uy
+      hostmaster: admin@ejemplo.com.uy
 
+  roles:
+  - role: apache-centos
+    when: ansible_facts['os_family'] == "RedHat"
+  - role: apache-debian
+    when: ansible_facts['os_family'] == "Debian"
 
   tasks:
   - name: Install LAMP software
@@ -32,5 +39,5 @@
       state: enabled
       permanent: yes
       inmediate: yes
-    loop:
+  
       
