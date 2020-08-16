@@ -5,6 +5,7 @@
     name: httpd
     state: latest
 
+
 - name: Create virtualhost connfig directory
   file:
     path: /etc/httpd/vhost.d
@@ -12,16 +13,27 @@
     mode: '0755'
     owner: root
 
+
 - name: Add virtualhost config directory to httpd.conf
   lineinfile:
     path: /etc/httpd/conf/httpd.conf
     line: IncludeOptional vhost.d/*.conf
+
 
 - name: Start and enable services
   service:
     name: httpd
     state: started
     enabled: yes
+
+- name: Create loadbalancer configuration
+  template:
+    src: templates/loadbalancer.j2
+    dest: /etc/httpd/vhost.d/loadbalancer.conf
+    owner: root
+    mode: '0644'
+  notify: restart apache
+
 
 - name: Configurar firewall
   firewalld: 
